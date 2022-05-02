@@ -2,7 +2,7 @@ import numpy as np
 
 class MeshModel:
     def __init__(self, obj_path):
-        self.obj_path=obj_path
+        self.obj_path = obj_path
         # mesh顶点位置，size=(number of vertices, 3)
         self.vertices = None
         # mesh面上的顶点序号（从1开始），size=(number of faces, 3)

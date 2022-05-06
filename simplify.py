@@ -43,7 +43,15 @@ class mesh_simplify(MeshModel):
     # plane equ: ax+by+cz+d=0 a^2+b^2+c^2=1 
     # p1 ,p2, p3 (x, y, z) are three points on a face
     def calculate_plane_equation_for_one_face(self, p1, p2, p3):
-        pass
+        # p[0]->p.x p[1]->p.y p[2]->p.z
+        a = ((p2[1] - p1[1])*(p3[2] - p1[2]) - (p2[2] - p1[2])*(p3[1] - p1[1]))
+        b = ((p2[2] - p1[2])*(p3[0] - p1[0]) - (p2[0] - p1[0])*(p3[2] - p1[2]))
+        c = ((p2[0] - p1[0])*(p3[1] - p1[1]) - (p2[1] - p1[1])*(p3[0] - p1[0]))
+        norm = (a*a + b*b + c*c)**0.5
+        a, b, c = a/norm, b/norm, c/norm
+        d = -(a*p1[0] + b*p1[1] + c*p1[2])
+        return a, b, c, d
+
 
 if __name__ =="__main__":
 

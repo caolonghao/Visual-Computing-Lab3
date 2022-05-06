@@ -34,6 +34,8 @@ class mesh_subdivision(MeshModel):
             out_faces.append([p2_id, c1_id, c3_id])
             out_faces.append([p3_id, c1_id, c2_id])
             out_faces.append([c1_id, c2_id, c3_id])
+        
+        self.faces = np.array(out_faces)
 
 if __name__ =="__main__":
 

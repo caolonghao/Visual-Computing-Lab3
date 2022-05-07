@@ -47,4 +47,3 @@ if __name__ =="__main__":
     model = mesh_subdivision(args.i)
     model.subdivide_by_mid()
     model.save_obj(args.o)
-

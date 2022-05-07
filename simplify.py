@@ -33,7 +33,6 @@ class mesh_simplify(MeshModel):
     
     #为所有平面计算参数
     def calculate_all_plane_equations(self):
-        
         pass
     
     # 为每个顶点计算Q矩阵

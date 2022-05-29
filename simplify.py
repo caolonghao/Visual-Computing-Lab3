@@ -15,6 +15,10 @@ class mesh_simplify(MeshModel):
         self.Pair_heap = []
         self.valid_pairs = set()
 
+        # -1，节点编号从0开始，方便处理
+        self.edges -= 1
+        self.faces -= 1
+
     class Pair:
         def __init__(self, pair, v_opt, loss):
             self.pair = pair
@@ -34,7 +38,7 @@ class mesh_simplify(MeshModel):
         for edge in self.edges:
             if edge[0] > edge[1]:
                 edge[0], edge[1] = edge[1], edge[0] # 边的端点交换序号
-            valid_pairs.add((edge[0] - 1, edge[1] - 1))
+            valid_pairs.add((edge[0], edge[1]))
         for i in range(num_nodes):
             for j in range(i + 1, num_nodes):
                 if (i, j) in valid_pairs:
@@ -105,11 +109,11 @@ class mesh_simplify(MeshModel):
             # 更新 v1 未出现，但是 v2 出现的面，将 v2 改为 v1
             face_need_del = []
             for i, face in enumerate(self.faces):
-                if v1+1 in face and v2+1 in face:
+                if v1 in face and v2 in face:
                     face_need_del.append(i)
-                elif v1+1 not in face and v2+1 in face:
-                    mask = np.nonzero(face == v2+1)[0]
-                    self.faces[i][mask] = v1+1
+                elif v1 not in face and v2 in face:
+                    mask = np.nonzero(face == v2)[0]
+                    self.faces[i][mask] = v1
             # 编号从 1 开始，恶心炸了
 
             self.faces = np.delete(self.faces, face_need_del, 0)
@@ -208,16 +212,20 @@ class mesh_simplify(MeshModel):
         all_numbers = list(all_numbers)
         all_numbers.sort()
         for index, number in enumerate(all_numbers):
-            order_mapping[number] = index + 1
+            order_mapping[number] = index
         for i, face in enumerate(self.faces):
             for j, num in enumerate(face):
                 self.faces[i][j] = order_mapping[num]
+        
+        # 加回 1，节点编号从 1 开始
+        self.faces += 1
+        self.edges += 1
     
     #为所有平面计算参数
     def calculate_all_plane_equations(self):
         plane_Kp_list = []
         for plane in self.faces:
-            p1_id, p2_id, p3_id = plane[0] - 1, plane[1] - 1, plane[2] - 1
+            p1_id, p2_id, p3_id = plane[0], plane[1], plane[2]
             p1, p2, p3 = self.vertices[p1_id], self.vertices[p2_id], self.vertices[p3_id]
             a, b, c, d = self.calculate_plane_equation_for_one_face(p1, p2, p3)
             Kp_matrix = np.array([ [a*a, a*b, a*c, a*d],
@@ -234,7 +242,7 @@ class mesh_simplify(MeshModel):
         Q_list = [np.zeros((4,4)) for _ in range(num_nodes)]
         for index, face in enumerate(self.faces):
             for p in face:
-                Q_list[p-1] += self.plane_Kp_list[index]
+                Q_list[p] += self.plane_Kp_list[index]
         self.Q_list = Q_list
         
        
@@ -253,7 +261,7 @@ if __name__ =="__main__":
     parser=argparse.ArgumentParser(description='Mesh simplify')
     parser.add_argument('-i', type=str, default='models/block.obj', help='input file path of an existing 3d model.')
     parser.add_argument('-o', type=str, default='results/simplify_block.obj', help='output path of 3d model.')
-    parser.add_argument('-ratio', type=np.float, default=0.1, help='Simplification ratio (0<r<=1)')
+    parser.add_argument('-ratio', type=np.float, default=0.8, help='Simplification ratio (0<r<=1)')
     parser.add_argument('-t', type=np.float, default=0, help='Threshold for valid pair selection (>=0).')
     args=parser.parse_args()
 

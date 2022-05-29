@@ -2,7 +2,7 @@ import numpy as np
 
 class MeshModel:
     def __init__(self, obj_path):
-        self.obj_path = obj_path
+        self.obj_path=obj_path
         # mesh顶点位置，size=(number of vertices, 3)
         self.vertices = None
         # mesh面上的顶点序号（从1开始），size=(number of faces, 3)
@@ -36,8 +36,11 @@ class MeshModel:
         edge_1=self.faces[:,0:2]
         edge_2=self.faces[:,1:]
         edge_3=np.concatenate([self.faces[:,:1], self.faces[:,-1:]], axis=1)
+        edge_4=np.concatenate([self.faces[:,1:2], self.faces[:,:1]], axis=1)
+        edge_5=np.concatenate([self.faces[:,-1:], self.faces[:,1:2]], axis=1)
+        edge_6=np.concatenate([self.faces[:,-1:], self.faces[:,:1]], axis=1)
 
-        self.edges=np.concatenate([edge_1, edge_2, edge_3], axis=0)
+        self.edges=np.concatenate([edge_1, edge_2, edge_3, edge_4, edge_5, edge_6], axis=0)
 
         _, edge_index=np.unique(self.edges[:,0]*(10**10)+self.edges[:,1], return_index=True)
         self.edges=self.edges[edge_index,:]

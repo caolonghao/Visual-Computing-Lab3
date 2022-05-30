@@ -1,8 +1,6 @@
 import numpy as np
-import sys
 import argparse
 
-from psutil import swap_memory
 from base_model import MeshModel
 
 # Mesh subdivision calss
@@ -42,8 +40,8 @@ class mesh_subdivision(MeshModel):
 if __name__ =="__main__":
 
     parser=argparse.ArgumentParser(description='Mesh subdivision')
-    parser.add_argument('-i', type=str, default='models/block.obj', help='input file path of an existing 3d model.')
-    parser.add_argument('-o', type=str, default='results/subdivision_block.obj', help='output path of 3d model.')
+    parser.add_argument('-i', type=str, default='models/cube.obj', help='input file path of an existing 3d model.')
+    parser.add_argument('-o', type=str, default='results/subdivision_cube.obj', help='output path of 3d model.')
     args=parser.parse_args()
 
     model = mesh_subdivision(args.i)

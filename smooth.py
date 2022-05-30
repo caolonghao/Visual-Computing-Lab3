@@ -3,6 +3,7 @@ import sys
 import argparse
 
 from sklearn import neighbors
+import scipy.sparse as sp
 from base_model import MeshModel
 
 # Mesh smooth calss
@@ -39,15 +40,16 @@ class mesh_smooth(MeshModel):
     # new_vertices = lamb * (laplacian * old_vertices) + old_vertices
     def filter_laplacian(self, iterations: int, lamb:float):
         lap_mat = self.laplacian_calculation()
+        # sparse_lap_mat = sp.coo_matrix(lap_mat)
         for _ in range(iterations):
-            self.vertices = lamb * (np.matmul(lap_mat, self.vertices)) + self.vertices
+            self.vertices = lamb * (np.dot(lap_mat, self.vertices)) + self.vertices
 
 
 if __name__ =="__main__":
 
     parser=argparse.ArgumentParser(description='Mesh smooth')
-    parser.add_argument('-i', type=str, default='models/dragon.obj', help='input file path of an existing 3d model.')
-    parser.add_argument('-o', type=str, default='results/smooth_dragon.obj', help='output path of 3d model.')
+    parser.add_argument('-i', type=str, default='models/Arma.obj', help='input file path of an existing 3d model.')
+    parser.add_argument('-o', type=str, default='results/smooth_Arma.obj', help='output path of 3d model.')
     parser.add_argument('-n', type=int, default=5, help='iteration number')
     parser.add_argument('-l', type=float, default=0.5, help='lambda used in filter')
     args=parser.parse_args()

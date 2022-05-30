@@ -77,7 +77,7 @@ class mesh_simplify(MeshModel):
 
     #迭代的删除 valid pair (v1, v2)  直到剩余的vertices数量= ratio*初始顶点数
     #Hint 
-    #每次删除v1 v2时，把v2和v1的位置都改为v_opt, 然后删除v1
+    #每次删除v1 v2时，把v2和v1的位置都改为v_opt, 然后删除v2
     #然后更新 surface参数,Q矩阵, valid pair以及 optimal 【不需要全部重新计算】
     def start_remove_pair_until_iteratively(self):
         num_node_delete = round(self.vertices.shape[0] * (1-self.ratio))
@@ -261,8 +261,8 @@ if __name__ =="__main__":
     parser=argparse.ArgumentParser(description='Mesh simplify')
     parser.add_argument('-i', type=str, default='models/block.obj', help='input file path of an existing 3d model.')
     parser.add_argument('-o', type=str, default='results/simplify_block.obj', help='output path of 3d model.')
-    parser.add_argument('-ratio', type=np.float, default=0.8, help='Simplification ratio (0<r<=1)')
-    parser.add_argument('-t', type=np.float, default=0, help='Threshold for valid pair selection (>=0).')
+    parser.add_argument('-ratio', type=float, default=0.8, help='Simplification ratio (0<r<=1)')
+    parser.add_argument('-t', type=float, default=0, help='Threshold for valid pair selection (>=0).')
     args=parser.parse_args()
 
     obj_path = args.i
